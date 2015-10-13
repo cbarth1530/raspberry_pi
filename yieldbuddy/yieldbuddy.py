@@ -31,9 +31,9 @@ def update_sql(query):
 	#try:
 		# Execute the SQL command
 	cursor.execute(query)
-	
+
 		# Commit changes in the database
-	#db.commit()
+	db.commit()
 	#except:
 		# Rollback in case there is any error
 		#db.rollback()
@@ -52,7 +52,7 @@ def email_message_tls(login_address,email_password,to_address,message,smtp_serve
 		global yieldbuddy_name
 		#print login_address,email_password,to_address,message,smtp_server,smtp_port
 		body = "" + now.strftime("%b %d %Y %I:%M:%S %p") + "    " + message + ""
-		 
+
 		headers = ["From: " + login_address,
 			   "Subject: yieldbuddy Alert from " + yieldbuddy_name,
 			   "To: " + to_address,
@@ -64,8 +64,8 @@ def email_message_tls(login_address,email_password,to_address,message,smtp_serve
 		smtpObj.ehlo()
 		smtpObj.starttls()
 		smtpObj.ehlo
-		smtpObj.login(login_address, email_password)		
-		smtpObj.sendmail(login_address, to_address, headers + "\r\n\r\n" + body)         
+		smtpObj.login(login_address, email_password)
+		smtpObj.sendmail(login_address, to_address, headers + "\r\n\r\n" + body)
 		addMessageLog("Successfully sent email: " + message)
 		printMessageLog()
 		return 1
@@ -84,10 +84,10 @@ def AESencrypt(password, plaintext, base64=False):
 		BLOCK_SIZE = 16
 		KEY_SIZE = 32
 		MODE = AES.MODE_CBC
-		 
+
 		salt = os.urandom(SALT_LENGTH)
 		iv = os.urandom(BLOCK_SIZE)
-		 
+
 		paddingLength = 16 - (len(plaintext) % 16)
 		paddedPlaintext = plaintext+chr(paddingLength)*paddingLength
 		derivedKey = password
@@ -107,7 +107,7 @@ def AESencrypt(password, plaintext, base64=False):
 		addMessageLog("Error (AESencrypt): " + str(detail))
 		printMessageLog()
 		return 0
- 
+
 def AESdecrypt(password, ciphertext, base64=False):
 	try:
 	    import hashlib
@@ -117,7 +117,7 @@ def AESdecrypt(password, ciphertext, base64=False):
 	    BLOCK_SIZE = 16
 	    KEY_SIZE = 32
 	    MODE = AES.MODE_CBC
-	     
+
 	    if base64:
 	        import base64
 	        decodedCiphertext = base64.b64decode(ciphertext)
@@ -142,8 +142,8 @@ def AESdecrypt(password, ciphertext, base64=False):
 		addMessageLog("Error (AESencrypt): " + str(detail))
 		printMessageLog()
 		return 0
-		
-		
+
+
 def addMessageLog(logmessage):
 	global now
 	now = datetime.now()
@@ -156,27 +156,27 @@ def addMessageLog(logmessage):
 			f_Log=open(app_path + 'log.txt','a')
 			f_Log.write("\n" + now.strftime("%Y/%m/%d %H:%M:%S") + ": " + logmessage)
 			f_Log.close()
-	
-	
+
+
 def printMessageLog():
 	print '\033[1m' #Bold #Bold
 	print("\033[39;0H[  Lastest Messages  ]-------------------------------------------------------------------------------------")
 	print '\033[0m' #Un-Bold #Un-Bold
 	i = 0
 	print("\033[39;0H")
-	print ("\033[K")	
+	print ("\033[K")
 	while i < 10:
 		if i == 9:
 			print("\033[" + str(i+40) + ";0H")
 			print ("\033[K")
-			print("\033[" + str(i+40) + ";0H" + str(i+1) + ")" + str(messagelog[i]))	
+			print("\033[" + str(i+40) + ";0H" + str(i+1) + ")" + str(messagelog[i]))
 		else:
 			print("\033[" + str(i+40) + ";0H")
 			print ("\033[K")
 			print("\033[" + str(i+40) + ";0H" + str(i+1) + ") " + str(messagelog[i]))
-		
+
 		i=i+1
-		
+
 def getInterfaceIPs():
 	try:
 		proc = subprocess.Popen(["ifconfig | grep 'inet addr:'"], stdout=subprocess.PIPE, shell=True)
@@ -197,20 +197,20 @@ def getInterfaceIPs():
 		print "\nError: Cannot get Interface IP Addresses."
 		addMessageLog("Error: Cannot get Interface IP Addresses.")
 		printMessageLog()
-		
+
 def drawInterfaceIPs():
 		IP_Addresses = getInterfaceIPs()
 		i=0
 		while i < len(IP_Addresses):
 			print("\033[" + str(i+8) + ";80H")
-			print("\033[" + str(i+8) + ";80H" + str(i+1) + ")" + str(IP_Addresses[i]))	
+			print("\033[" + str(i+8) + ";80H" + str(i+1) + ")" + str(IP_Addresses[i]))
 			i=i+1
-	
-		
 
-	
+
+
+
 def checkSerial():
-	
+
 	try:
 		global app_path
 		global startTime
@@ -221,7 +221,7 @@ def checkSerial():
 		global smtp_port
 		global login_address
 		global to_address
-		
+
 		global oldRelays
 		global oldRelay_isAuto
 		global oldLight_Schedule
@@ -247,7 +247,7 @@ def checkSerial():
 		oldSetPoint_TDS2 = " "
 		oldSetPoint_CO2 = " "
 		oldSetPoint_Light = " "
-				
+
 		global LastDataPoint_Time
 		global delta
 		global first_timesync
@@ -255,7 +255,7 @@ def checkSerial():
 
 		global now
 		now = datetime.now()
-		#Open up the 'Command' file to see if a command has been issued.		
+		#Open up the 'Command' file to see if a command has been issued.
 		f_Command=open(app_path+'Command','r+')
 		Command=f_Command.readline()
 		Command=Command.rstrip('\n')
@@ -318,7 +318,7 @@ def checkSerial():
 					printMessageLog()
 				except:
 					print "Error refreshing interface."
-					
+
 			elif 'saveemailsettings' in Command:
 				try:
 					saveemailsettings,login_address,email_password,to_address,smtp_server,smtp_port=Command.split(",")
@@ -386,7 +386,7 @@ def checkSerial():
 		#print("\v%s"%(line))
 		print("\033[35;0H                                                                                                           ")
 		print("\033[35;0H(" + now.strftime("%Y/%m/%d %H:%M:%S") + ") Now: " + now.strftime('%s') + "  Last Data Point: " + LastDataPoint_Time.strftime('%s') + "   Next Data Point [sec]: " + str(float(now.strftime('%s')) - float(LastDataPoint_Time.strftime('%s'))) + "/" + str(TakeDataPoint_Every -  (float(now.strftime('%s')) - float(LastDataPoint_Time.strftime('%s')) )  ) + "/" + str(TakeDataPoint_Every))
-		
+
 		now = datetime.now()
 		if 'Time' in line:
 			print("\r")
@@ -684,8 +684,8 @@ def checkSerial():
 				if 'HIGH' in Light_Status and Light_High_Alarm[0] == 0:
 					update_sql("UPDATE `Light` SET High_Alarm = 1, High_Time= '" + now.strftime("%b %d %Y %I:%M:%S %p") + "'")
 			ser.flushInput()
-		
-			
+
+
 	except ValueError as detail:
 		#print "\nError: ", detail
 		addMessageLog("Error: " + str(detail))
@@ -724,7 +724,7 @@ try:
 except:
 	print 'Error opening serial device.'
 	#sys.exit(0)
-	
+
 
 #Insert sensors datapoint into SQL db at this interval (in seconds):
 TakeDataPoint_Every = 90   #default: 300 seconds (Every 5 minutes) (12 times per hour) --> 288 Datapoints a day
@@ -817,4 +817,3 @@ while 1:
 	checkSerial()
 	global now
 	now = datetime.now()
-
